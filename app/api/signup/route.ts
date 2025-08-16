@@ -13,6 +13,7 @@ export const POST = asyncHandler(async (req: Request) => {
   }
 
   const existingUser = await prisma.user.findUnique({ where: { email } });
+
   if (existingUser) {
     throw new ApiError(409, "Email already exists");
   }
@@ -24,5 +25,5 @@ export const POST = asyncHandler(async (req: Request) => {
     select: { id: true, full_name: true, email: true },
   });
 
-  return successResponse(201, "User registered successfully", newUser);
+  return successResponse(201, "Sign in successfully", newUser);
 });

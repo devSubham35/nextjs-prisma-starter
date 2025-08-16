@@ -2,28 +2,34 @@
 
 import { z } from "zod";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
 import { navRoutes } from "@/lib/navRoutes";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Controller, useForm } from "react-hook-form";
 import { Separator } from "@/components/ui/separator";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GoogleLogo } from "@/public/icons/google-logo";
+import { useAuthSignupMutation } from "@/api/hook/auth/hook";
 import { SignUpValidationSchema } from "../schema/auth.schema";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-
 
 const SignUpPage = () => {
-  const form = useForm<z.infer<typeof SignUpValidationSchema>>({
+
+  /// Sign in Mutation
+  const { mutateAsync: userSignupMutate, isPending: isUserSignupPending } = useAuthSignupMutation();
+
+  /// Form handling & validation
+  const { handleSubmit, control, formState: { errors } } = useForm<z.infer<typeof SignUpValidationSchema>>({
     defaultValues: {
       email: "",
       password: "",
+      full_name: "",
     },
     resolver: zodResolver(SignUpValidationSchema),
   });
 
-  const onSubmit = (data: z.infer<typeof SignUpValidationSchema>) => {
-    console.log(data);
+  /// Form Submission
+  const onSubmit = async (data: z.infer<typeof SignUpValidationSchema>) => {
+    await userSignupMutate(data);
   };
 
   return (
@@ -44,56 +50,74 @@ const SignUpPage = () => {
           <Separator />
         </div>
 
-        <Form {...form}>
-          <form
-            className="w-full space-y-4"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
-            <FormField
-              control={form.control}
+        <form className="w-full space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          {/* Full Name */}
+          <div>
+            <label className="block text-sm font-medium">Full Name</label>
+            <Controller
+              name="full_name"
+              control={control}
+              render={({ field }) => (
+                <Input type="text" placeholder="Full name" {...field} />
+              )}
+            />
+            {errors.full_name && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.full_name.message}
+              </p>
+            )}
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-sm font-medium">Email</label>
+            <Controller
               name="email"
+              control={control}
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Email"
-                      className="w-full"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <Input type="email" placeholder="Email" {...field} />
               )}
             />
-            <FormField
-              control={form.control}
+            {errors.email && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-sm font-medium">Password</label>
+            <Controller
               name="password"
+              control={control}
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="Password"
-                      className="w-full"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                <Input type="password" placeholder="Password" {...field} />
               )}
             />
-            <Button type="submit" className="mt-4 w-full">
-              Continue with Email
-            </Button>
-          </form>
-        </Form>
+            {errors.password && (
+              <p className="text-sm text-red-500 mt-1">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          {/* Submit */}
+          <Button
+            type="submit"
+            className="mt-4 w-full"
+            loading={isUserSignupPending}
+          >
+            Sign Up
+          </Button>
+        </form>
 
         <p className="mt-5 text-sm text-center">
           Already have an account?
-          <Link href={navRoutes?.auth?.signIn} className="ml-1 underline text-muted-foreground">
+          <Link
+            href={navRoutes?.auth?.signIn}
+            className="ml-1 underline text-muted-foreground"
+          >
             Log in
           </Link>
         </p>

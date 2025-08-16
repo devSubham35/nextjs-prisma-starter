@@ -1,12 +1,15 @@
-export const baseUrlApi = `${process.env.NEXT_APP_BASE_URL}/api`;
+import { constant } from "@/lib/constant";
+
+export const baseUrlApi = `${constant.BASE_API_URL}/api`;
 
 export const endpoints = {
   auth: {
-    signup: "/sign-up",
-    login: "/login",
+    signup: "/signup",
+    signin: "/signin",
   },
 };
 
 export const sucessNotificationEndPoints = [
-  endpoints.auth.login
+  endpoints.auth.signup,
+  endpoints.auth.signin,
 ];

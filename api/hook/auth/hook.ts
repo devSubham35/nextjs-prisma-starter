@@ -18,12 +18,12 @@ export const useAuthSignupMutation = () => {
   });
 };
 
-export const useAuthLoginMutation = () => {
+export const useAuthSigninMutation = () => {
   return useMutation({
     mutationKey: [authKeys.auth_login],
     mutationFn: async (body: LoginPayload) => {
       const res = await axiosInstance.post(
-        endpoints.auth.login,
+        endpoints.auth.signin,
         body
       );
 

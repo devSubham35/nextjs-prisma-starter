@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import AppProviders from "@/providers/AppProviders";
 import TanstackProvider from "@/providers/TanstackProvider";
+import { Toaster } from "sonner";
 
 const outFit = Outfit({
   variable: "--font-outfit",
@@ -26,6 +27,7 @@ export default function RootLayout({
           <AppProviders>
             {children}
           </AppProviders>
+          <Toaster richColors position="bottom-right" />
         </TanstackProvider>
       </body>
     </html>
