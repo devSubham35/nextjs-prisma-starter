@@ -25,5 +25,5 @@ export const POST = asyncHandler(async (req: Request) => {
     select: { id: true, full_name: true, email: true },
   });
 
-  return successResponse(201, "Sign in successfully", newUser);
+  return successResponse(201, "Sign up successfully", newUser);
 });
